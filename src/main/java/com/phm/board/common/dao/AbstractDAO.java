@@ -2,16 +2,16 @@ package com.phm.board.common.dao;
 
 import java.util.List;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.ibatis.logging.Log;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class AbstractDAO {
-	protected Log log = (Log) LogFactory.getLog(AbstractDAO.class);
+	protected Log log = LogFactory.getLog(AbstractDAO.class);
 	
 	@Autowired
-	private SqlSessionTemplate sqlSession; // xml에 선언한 의존관계 주
+	private SqlSessionTemplate sqlSession; // xml에 선언한 의존관계 주입 
 	
 	protected void printQueryId(String queryId) {
 		if(log.isDebugEnabled()) {
@@ -51,7 +51,7 @@ public class AbstractDAO {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public List SelectList(String queryId, Object params) {
+	public List selectList(String queryId, Object params) {
 		printQueryId(queryId);
 		return sqlSession.selectList(queryId, params);
 	}

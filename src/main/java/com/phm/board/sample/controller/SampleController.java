@@ -1,11 +1,16 @@
 package com.phm.board.sample.controller;
 
+import java.util.List;
 import java.util.Map;
+
+import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.phm.board.sample.service.SampleService;
 
 @Controller
 public class SampleController {
@@ -14,10 +19,18 @@ public class SampleController {
 	// 어떤 클래스에서 로그가 출력된 것인지 확인할 수 있게 한다.
 	// 단순히 syso를 사용했다면 어떤 클래스에서 출력된 로그인지 확인하기 쉽지 않았을것 
 	
+	@Resource(name = "sampleService") // service 영역의 접근을 위한 선언 
+	private SampleService sampleService;
+	
+	
 	@RequestMapping(value="/sample/openSampleList.do") // 실행될 주소 
 	public ModelAndView openSampleList(Map<String, Object> commandMap) throws Exception {
-		ModelAndView mv = new ModelAndView("");
-		log.debug("interceptor testing");
+		ModelAndView mv = new ModelAndView("/sample/boardList");
+		
+		// 하나의 게시글에도 여러가지 정보가 존재 글 번호, 글 제목, 작성일자 등
+		// key, value 쌍으로 값을 저장하기 위해 Map 을 사용한다.
+		List<Map<String, Object>> list = sampleService.selectBoardList(commandMap);
+		mv.addObject("list", list);
 		
 		return mv;
 	}
