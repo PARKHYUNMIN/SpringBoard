@@ -11,6 +11,13 @@
 	<!-- 컴포넌트 스캔 기반 패키지  -->
 	<context:component-scan base-package="com.phm.board" />
 	
+	<!-- CustomArgumentResolver 등록하기  -->
+	<mvc:annotation-driven>
+		<mvc:argument-resolvers>
+			<bean class="com.phm.board.common.resolver.CustomMapArgumentResolver"></bean>
+		</mvc:argument-resolvers>
+	</mvc:annotation-driven>
+	
 	<!-- 인터셉터 설정  -->
 	<mvc:interceptors>
 		<mvc:interceptor>
