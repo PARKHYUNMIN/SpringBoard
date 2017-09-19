@@ -26,8 +26,8 @@ public class SampleController {
 	private SampleService sampleService;
 	
 	
-	@RequestMapping(value="/sample/openSampleList.do") // 실행될 주소 
-	public ModelAndView openSampleList(Map<String, Object> commandMap) throws Exception {
+	@RequestMapping(value="/sample/openBoardList.do") // 실행될 주소 
+	public ModelAndView openBoardList(Map<String, Object> commandMap) throws Exception {
 		ModelAndView mv = new ModelAndView("/sample/boardList");
 		
 		// 하나의 게시글에도 여러가지 정보가 존재 글 번호, 글 제목, 작성일자 등
@@ -52,5 +52,21 @@ public class SampleController {
 		}
 		
 		return mv;
+	}
+	
+	@RequestMapping(value="/sample/openBoardWrite.do")
+	public ModelAndView openBoardWrite(CommandMap commandMap) throws Exception{
+	    ModelAndView mv = new ModelAndView("/sample/boardWrite");
+	     
+	    return mv;
+	}
+	
+	@RequestMapping(value="/sample/insertBoard.do")
+	public ModelAndView insertBoard(CommandMap commandMap) throws Exception{
+	    ModelAndView mv = new ModelAndView("redirect:/sample/openBoardList.do");
+	     
+	    sampleService.insertBoard(commandMap.getMap()); // insert query 실행 
+	     
+	    return mv; // 리다이렉트 
 	}
 }
