@@ -18,8 +18,15 @@
         ]]>
 	</select>
 
-	<insert id="insertBoard" parameterType="hashmap">
-    		<![CDATA[
+	<insert id="insertBoard" parameterType="hashmap"
+		useGeneratedKeys="true" keyProperty="IDX">
+		<!-- 오라클과 같은 키 자동생성 기능이 없는 db에서 필요한 구문 selectKey -->
+		<selectKey keyProperty="IDX" resultType="string" order="BEFORE">
+			SELECT SEQ_TB_BOARD_IDX.NEXTVAL FROM DUAL
+		</selectKey>
+		<!-- selectKey를 이용해서 다음 게시글 번호를 가져온 후, 그 값은 파라미터에 다시 저장한다. -->
+    <![CDATA[
+         
         INSERT INTO TB_BOARD
         (
             IDX,
@@ -32,7 +39,7 @@
         )
         VALUES
         (
-            SEQ_TB_BOARD_IDX.NEXTVAL,
+            #{IDX},
             #{TITLE},
             #{CONTENTS},
             0,
@@ -40,7 +47,7 @@
             SYSDATE,
             'Admin'
         )
-    		]]>
+    ]]>
 	</insert>
 
 	<update id="updateHitCnt" parameterType="hashmap">
@@ -91,5 +98,59 @@
     ]]>
 	</update>
 
+	<insert id="insertFile" parameterType="hashmap">
+    <![CDATA[
+        INSERT INTO TB_FILE
+        (
+            IDX,
+            BOARD_IDX,
+            ORIGINAL_FILE_NAME,
+            STORED_FILE_NAME,
+            FILE_SIZE,
+            CREA_ID
+        )
+        VALUES
+        (
+            SEQ_TB_FILE_IDX.NEXTVAL,
+            #{BOARD_IDX},
+            #{ORIGINAL_FILE_NAME},
+            #{STORED_FILE_NAME},
+            #{FILE_SIZE},
+            'Admin'
+        )
+    ]]>
+	</insert>
+
+	<select id="selectFileList" parameterType="hashmap" resultType="hashmap">
+    <![CDATA[
+        SELECT
+            IDX,
+            ORIGINAL_FILE_NAME,
+            ROUND(FILE_SIZE/1024,1) AS FILE_SIZE
+        FROM
+            TB_FILE
+        WHERE
+            BOARD_IDX = #{IDX}
+            AND DEL_GB = 'N'
+    ]]>
+	</select>
+
+	<update id="deleteFileList" parameterType="hashmap">
+    <![CDATA[
+        UPDATE TB_FILE SET
+            DEL_GB = 'Y'
+        WHERE
+            BOARD_IDX = #{IDX} 
+    ]]>
+	</update>
+
+	<update id="updateFile" parameterType="hashmap">
+    <![CDATA[
+        UPDATE TB_FILE SET
+            DEL_GB = 'N'
+        WHERE
+            IDX = #{FILE_IDX}  
+    ]]>
+	</update>
 
 </mapper>

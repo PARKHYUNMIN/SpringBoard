@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
@@ -62,10 +63,10 @@ public class SampleController {
 	}
 	
 	@RequestMapping(value="/sample/insertBoard.do")
-	public ModelAndView insertBoard(CommandMap commandMap) throws Exception{
+	public ModelAndView insertBoard(CommandMap commandMap, HttpServletRequest request) throws Exception{
 	    ModelAndView mv = new ModelAndView("redirect:/sample/openBoardList.do");
 	     
-	    sampleService.insertBoard(commandMap.getMap()); // insert query 실행 
+	    sampleService.insertBoard(commandMap.getMap(), request); // insert query 실행 
 	     
 	    return mv; // 리다이렉트 
 	}
@@ -75,7 +76,8 @@ public class SampleController {
 	    ModelAndView mv = new ModelAndView("/sample/boardDetail");
 	     
 	    Map<String,Object> map = sampleService.selectBoardDetail(commandMap.getMap());
-	    mv.addObject("map", map);
+	    mv.addObject("map", map.get("map")); // 기존 게시글 상세전
+	    mv.addObject("list", map.get("list")); // 첨부파일 목록 
 	     
 	    return mv;
 	}
@@ -85,16 +87,17 @@ public class SampleController {
 	    ModelAndView mv = new ModelAndView("/sample/boardUpdate");
 	     
 	    Map<String,Object> map = sampleService.selectBoardDetail(commandMap.getMap());
-	    mv.addObject("map", map);
+	    mv.addObject("map", map.get("map"));
+	    mv.addObject("list", map.get("list"));
 	     
 	    return mv;
 	}
 	 
 	@RequestMapping(value="/sample/updateBoard.do")
-	public ModelAndView updateBoard(CommandMap commandMap) throws Exception{
+	public ModelAndView updateBoard(CommandMap commandMap, HttpServletRequest request) throws Exception{
 	    ModelAndView mv = new ModelAndView("redirect:/sample/openBoardDetail.do");
 	     
-	    sampleService.updateBoard(commandMap.getMap());
+	    sampleService.updateBoard(commandMap.getMap(), request);
 	     
 	    mv.addObject("IDX", commandMap.get("IDX"));
 	    return mv;
