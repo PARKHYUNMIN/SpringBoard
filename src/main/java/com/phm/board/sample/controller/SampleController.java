@@ -27,16 +27,27 @@ public class SampleController {
 	private SampleService sampleService;
 	
 	
-	@RequestMapping(value="/sample/openBoardList.do") // 실행될 주소 
-	public ModelAndView openBoardList(Map<String, Object> commandMap) throws Exception {
-		ModelAndView mv = new ModelAndView("/sample/boardList");
-		
-		// 하나의 게시글에도 여러가지 정보가 존재 글 번호, 글 제목, 작성일자 등
-		// key, value 쌍으로 값을 저장하기 위해 Map 을 사용한다.
-		List<Map<String, Object>> list = sampleService.selectBoardList(commandMap);
-		mv.addObject("list", list);
-		
-		return mv;
+	@RequestMapping(value="/sample/openBoardList.do")
+	public ModelAndView openBoardList(CommandMap commandMap) throws Exception{
+	    ModelAndView mv = new ModelAndView("/sample/boardList");
+	     
+	    return mv;
+	}
+	
+	@RequestMapping(value="/sample/selectBoardList.do")
+	public ModelAndView selectBoardList(CommandMap commandMap) throws Exception{
+	    ModelAndView mv = new ModelAndView("jsonView");
+	     
+	    List<Map<String,Object>> list = sampleService.selectBoardList(commandMap.getMap());
+	    mv.addObject("list", list);
+	    if(list.size() > 0){
+	        mv.addObject("TOTAL", list.get(0).get("TOTAL_COUNT"));
+	    }
+	    else{
+	        mv.addObject("TOTAL", 0);
+	    }
+	     
+	    return mv;
 	}
 	
 	@RequestMapping(value="/sample/testMapArgumentResolver.do")
